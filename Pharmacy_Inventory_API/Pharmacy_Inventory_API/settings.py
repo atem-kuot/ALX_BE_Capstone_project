@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'Pharmacy_Inventory_API'
+    'core'
 ]
 
 MIDDLEWARE = [
