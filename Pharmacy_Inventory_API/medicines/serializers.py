@@ -14,7 +14,6 @@ class SupplierSerializer(serializers.ModelSerializer):
     def get_medicine_count(self, obj):
         return obj.medicines.count()
 
-
 class MedicineSerializer(serializers.ModelSerializer):
     supplier_name = serializers.CharField(source='supplier.name', read_only=True)
     is_expired = serializers.SerializerMethodField()
