@@ -23,13 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+4&dau-!z=iqau(u=!d3$#-v)&s-f*6e9p78qj(dru$=1*(6+l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = []
 
 # Production settings
 DEBUG = False
-ALLOWED_HOSTS = ['api.yourpharmacy.com']
+ALLOWED_HOSTS = ['api.pharmacy_Inventory_API.com']
+PORT = 8000
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
