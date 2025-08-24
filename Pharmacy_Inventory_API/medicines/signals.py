@@ -2,10 +2,11 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.mail import mail_admins
 from .models import Medicine
+from django.utils import timezone
+from alerts.models import AlertLog
 
 @receiver(post_save, sender=Medicine)
 def check_low_stock(sender, instance, **kwargs):
-    from alerts.models import AlertLog
     if instance.quantity <= instance.threshold_alert:
         AlertLog.objects.create(
             medicine=instance,
@@ -15,8 +16,6 @@ def check_low_stock(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Medicine)
 def check_expiry(sender, instance, **kwargs):
-    from django.utils import timezone
-    from alerts.models import AlertLog
     if instance.expiry_date <= timezone.now().date() + timezone.timedelta(days=30):
         AlertLog.objects.create(
             medicine=instance,
