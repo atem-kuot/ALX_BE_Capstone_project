@@ -3,17 +3,79 @@ from django.db import transaction
 from .models import Prescription, PrescriptionMedicine
 from medicines.serializers import MedicineSerializer, PatientSerializer
 
-class PrescriptionMedicineSerializer(serializers.ModelSerializer):
-    medicine_details = MedicineSerializer(source='medicine', read_only=True)
-    medicine_id = serializers.IntegerField(write_only=True)
+class PrescriptionMedicineCreateSerializer(serializers.ModelSerializer):
+    medicine_name = serializers.CharField(write_only=True)
+    medicine_id = serializers.IntegerField(required=False)
     
     class Meta:
         model = PrescriptionMedicine
         fields = [
-            'id', 'medicine_id', 'medicine_details', 'quantity', 
-            'dosage_instructions', 'duration', 'is_fulfilled'
+            'medicine_name', 'medicine_id', 'quantity', 
+            'dosage_instructions', 'duration'
         ]
-        read_only_fields = ['is_fulfilled']
+    
+    def validate(self, data):
+        medicine_name = data.get('medicine_name')
+        medicine_id = data.get('medicine_id')
+        
+        if not medicine_id and not medicine_name:
+            raise serializers.ValidationError("Either medicine_id or medicine_name is required")
+        
+        # If medicine_name is provided, try to find the medicine
+        if medicine_name and not medicine_id:
+            try:
+                # Look for exact match first, then partial
+                medicine = Medicine.objects.get(
+                    name__iexact=medicine_name,
+                    is_active=True
+                )
+                data['medicine_id'] = medicine.id
+            except Medicine.DoesNotExist:
+                # Try partial match
+                medicines = Medicine.objects.filter(
+                    name__icontains=medicine_name,
+                    is_active=True
+                )
+                if medicines.count() == 1:
+                    data['medicine_id'] = medicines.first().id
+                else:
+                    raise serializers.ValidationError(
+                        f"Medicine '{medicine_name}' not found or multiple matches found. "
+                        f"Please use medicine_id for precise selection."
+                    )
+        
+        return data
+
+class PrescriptionCreateSerializer(serializers.ModelSerializer):
+    patient_id = serializers.IntegerField(write_only=True)
+    medicines = PrescriptionMedicineCreateSerializer(many=True)
+    
+    class Meta:
+        model = Prescription
+        fields = [
+            'patient_id', 'diagnosis', 'notes', 'is_urgent', 'medicines'
+        ]
+    
+    def create(self, validated_data):
+        medicines_data = validated_data.pop('medicines', [])
+        
+        with transaction.atomic():
+            prescription = Prescription.objects.create(
+                **validated_data,
+                prescribed_by=self.context['request'].user
+            )
+            
+            for medicine_data in medicines_data:
+                PrescriptionMedicine.objects.create(
+                    prescription=prescription,
+                    medicine_id=medicine_data['medicine_id'],
+                    quantity=medicine_data['quantity'],
+                    dosage_instructions=medicine_data.get('dosage_instructions', ''),
+                    duration=medicine_data.get('duration', '')
+                )
+        
+        return prescription
+
 
 class PrescriptionSerializer(serializers.ModelSerializer):
     patient_details = PatientSerializer(source='patient', read_only=True)
