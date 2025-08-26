@@ -25,4 +25,7 @@ urlpatterns = [
     path('patients/<int:pk>/', views.PatientDetailView.as_view(), name='patient-detail'),
     path('patients/<int:pk>/medication-history/', views.PatientMedicationHistoryView.as_view(), name='patient-medication-history'),
 
+    # Search endpoints
+    path('medicines/search/', views.MedicineSearchView.as_view(), name='medicine-search'),
+    path('medicines/autocomplete/', views.medicine_autocomplete, name='medicine-autocomplete'),
 ]
