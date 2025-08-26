@@ -65,6 +65,11 @@ class PrescriptionListView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(prescribed_by=self.request.user)
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return PrescriptionCreateSerializer
+        return PrescriptionSerializer
+
 class PrescriptionDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Prescription.objects.select_related(
         'patient', 'prescribed_by', 'fulfilled_by'
