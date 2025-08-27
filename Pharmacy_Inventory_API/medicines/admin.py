@@ -4,7 +4,7 @@ from .models import Medicine, Supplier
 @admin.register(Supplier)
 class SupplierAdmin(admin.ModelAdmin):
     list_display = ('name', 'contact_person', 'email', 'phone', 'medicine_count')
-    list_filter = ('created_at',)
+    list_filter = ('Date_Added',)
     search_fields = ('name', 'contact_person', 'email')
     
     def medicine_count(self, obj):
@@ -16,7 +16,7 @@ class MedicineAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'quantity', 'dosage', 'expiry_date', 'supplier', 'is_active')
     list_filter = ('category', 'is_active', 'expiry_date', 'supplier')
     search_fields = ('name', 'description')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('Date_Added', 'Last_Updated')
     list_editable = ('quantity', 'is_active')
     
     fieldsets = (
@@ -30,7 +30,7 @@ class MedicineAdmin(admin.ModelAdmin):
             'fields': ('is_active',)
         }),
         ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
+            'fields': ('Date_Added', 'Last_Updated'),
             'classes': ('collapse',)
         })
     )

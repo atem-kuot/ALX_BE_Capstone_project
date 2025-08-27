@@ -82,7 +82,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     patient_id = serializers.IntegerField(write_only=True)
     prescribed_by_name = serializers.CharField(source='prescribed_by.get_full_name', read_only=True)
     fulfilled_by_name = serializers.CharField(source='fulfilled_by.get_full_name', read_only=True)
-    medicines = PrescriptionMedicineSerializer(many=True, source='prescription_medicines')
+    medicines = MedicineSerializer(many=True, source='medicines')
     total_medicines = serializers.IntegerField(read_only=True)
     can_be_fulfilled = serializers.BooleanField(read_only=True)
     

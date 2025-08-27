@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import Medicine, Supplier
 from rest_framework import serializers
-from .models import Medicine, Supplier
+from .models import Medicine, Supplier, InventoryLog, Patient
+from prescriptions.models import Prescription
 
 class SupplierSerializer(serializers.ModelSerializer):
     medicine_count = serializers.SerializerMethodField()

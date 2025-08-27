@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from core.telegram_service import TelegramBotService
 
 class AlertLog(models.Model):
     ALERT_TYPES = [
@@ -104,6 +103,7 @@ class AlertLog(models.Model):
     
     def send_telegram_notification(self):
         """Send notification via Telegram"""
+        from core.telegram_service import TelegramBotService
         telegram_service = TelegramBotService()
         
         # Check user preferences if this is a user-specific alert

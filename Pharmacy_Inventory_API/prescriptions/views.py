@@ -11,7 +11,7 @@ from core.permissions import IsDoctor, IsPharmacist, IsAdmin
 from .models import Prescription, PrescriptionMedicine
 from .serializers import (
     PrescriptionSerializer, PrescriptionStatusSerializer, 
-    PrescriptionFulfillSerializer, PrescriptionMedicineSerializer
+    PrescriptionFulfillSerializer, PrescriptionMedicineCreateSerializer
 )
 
 class PrescriptionListView(generics.ListCreateAPIView):
@@ -155,7 +155,7 @@ class PrescriptionCancelView(generics.UpdateAPIView):
 
 class PrescriptionMedicineView(generics.RetrieveUpdateAPIView):
     queryset = PrescriptionMedicine.objects.select_related('medicine')
-    serializer_class = PrescriptionMedicineSerializer
+    serializer_class = PrescriptionMedicineCreateSerializer
     permission_classes = [permissions.IsAuthenticated, IsPharmacist]
 
 @api_view(['GET'])

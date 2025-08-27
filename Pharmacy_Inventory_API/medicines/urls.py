@@ -10,7 +10,6 @@ urlpatterns = [
     path('medicines/', views.MedicineListView.as_view(), name='medicine-list'),
     path('medicines/<int:pk>/', views.MedicineDetailView.as_view(), name='medicine-detail'),
     path('medicines/<int:pk>/update-stock/', views.update_stock, name='medicine-update-stock'),
-    path('medicines/categories/', views.medicine_categories, name='medicine-categories'),
     
     # Alert endpoints
     path('medicines/alerts/expiry/', views.medicine_expiry_alerts, name='medicine-expiry-alerts'),

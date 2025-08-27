@@ -70,6 +70,6 @@ def create_prescription_alerts(sender, instance, created, **kwargs):
                     'message': f'Prescription for {instance.patient} has been '
                               f'pending for {int(hours_pending)} hours',
                     'severity': 'MEDIUM',
-                    'user=instance.prescribed_by'
+                    'user': {instance.prescribed_by},
                 }
             )
