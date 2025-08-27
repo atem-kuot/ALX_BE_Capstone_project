@@ -2,6 +2,7 @@ import requests
 import logging
 from django.conf import settings
 from django.utils import timezone
+from alerts.models import AlertLog
 
 logger = logging.getLogger(__name__)
 
