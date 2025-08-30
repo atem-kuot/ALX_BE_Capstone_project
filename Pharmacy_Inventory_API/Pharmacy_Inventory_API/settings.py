@@ -25,26 +25,10 @@ SECRET_KEY = 'django-insecure-+4&dau-!z=iqau(u=!d3$#-v)&s-f*6e9p78qj(dru$=1*(6+l
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-# Production settings
-DEBUG = False
-ALLOWED_HOSTS = ['api.pharmacy_Inventory_API.com']
+# Development settings
+DEBUG = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 PORT = 8000
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pharmacy_prod',
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-    }
-}
-
-# Security
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
 # Application definition
 
 INSTALLED_APPS = [
@@ -56,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
     'core',
     'medicines',
     'prescriptions',
@@ -82,6 +67,7 @@ SIMPLE_JWT = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -171,13 +157,13 @@ AUTHENTICATION_BACKENDS = [
 # Custom user model
 AUTH_USER_MODEL = 'core.User'
 
-# CORS settings - install django-cors-headers first
-# pip install django-cors-headers
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",  # React frontend
-#     "http://127.0.0.1:3000",
-# ]
+# CORS settings (adjust for production)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React frontend
+    "http://127.0.0.1:3000",
+]
 
 # Add Telegram configuration
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
+
