@@ -96,7 +96,17 @@ class TelegramBotService:
         type_counts = Counter(alert.alert_type for alert in alerts)
         
         for alert_type, count in type_counts.items():
-            alert_display = dict(AlertLog.ALERT_TYPES).get(alert_type, alert_type)
+            # Define alert types locally to avoid circular import
+            ALERT_TYPES = [
+                ('LOW_STOCK', 'Low Stock'),
+                ('EXPIRY_WARNING', 'Expiry Warning'),
+                ('EXPIRED', 'Expired'),
+                ('PRESCRIPTION_URGENT', 'Urgent Prescription'),
+                ('PRESCRIPTION_PENDING', 'Pending Prescription'),
+                ('STOCK_CRITICAL', 'Critical Stock'),
+                ('SYSTEM', 'System Alert'),
+            ]
+            alert_display = dict(ALERT_TYPES).get(alert_type, alert_type)
             message += f"\n• {alert_display}: {count}"
         
         message += f"\n\n📋 <i>View all alerts in the system</i>"
