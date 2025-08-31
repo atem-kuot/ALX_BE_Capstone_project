@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-+4&dau-!z=iqau(u=!d3$#-v)&s-f*6e9p78qj(dru$=1*(6+l
 # SECURITY WARNING: don't run with debug turned on in production!
 # set DEBUG to False in production
 DEBUG = False
-ALLOWED_HOSTS = ['AtemKuot.pythonanywhere.com', 'localhost']
+ALLOWED_HOSTS = ['AtemKuot.pythonanywhere.com']
 
 # Application definition
 
