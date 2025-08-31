@@ -78,16 +78,22 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'Pharmacy_Inventory_API.urls'
 
+# Define template directory
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
             ],
         },
     },
@@ -96,7 +102,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Pharmacy_Inventory_API.wsgi.application'
 
 
- # MySQL database configuration for PythonAnywhere
+# MySQL database configuration for PythonAnywhere
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -144,8 +150,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = '/home/AtemKuot/ALX_BE_Capstone_project/Pharmacy_Inventory_API/static'
+# URL to use when referring to static files (in templates, etc.)
+STATIC_URL = '/static/'
+
+# The absolute path to the directory where collectstatic will collect static files for deployment.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Additional locations of static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# Media files (user-uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
