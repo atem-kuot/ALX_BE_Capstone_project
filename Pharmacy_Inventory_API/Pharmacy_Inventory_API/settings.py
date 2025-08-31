@@ -145,6 +145,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = '/home/AtemKuot/ALX_BE_Capstone_project/Pharmacy_Inventory_API/static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -168,10 +169,6 @@ CORS_ALLOWED_ORIGINS = [
 # Add Telegram configuration
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
-
-# Static files
-STATIC_ROOT = '/home/AtemKuot/Pharmacy_Inventory_API/static'
-STATIC_URL = '/static/'
 
 # Security settings
 CSRF_COOKIE_SECURE = True
