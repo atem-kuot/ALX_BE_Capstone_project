@@ -24,6 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+4&dau-!z=iqau(u=!d3$#-v)&s-f*6e9p78qj(dru$=1*(6+l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# set DEBUG to False in production
+DEBUG = False
+ALLOWED_HOSTS = ['AtemKuot.pythonanywhere.com', 'localhost']
 
 # Application definition
 
@@ -92,11 +95,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Pharmacy_Inventory_API.wsgi.application'
 
-# Database
+
+ # MySQL database configuration for PythonAnywhere
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_NAME', 'AtemKuot$Pharmacy_Inventroy'),
+        'USER': os.getenv('DB_USER', 'AtemKuot'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'Pythonanywhere#12345678'),
+        'HOST': os.getenv('DB_HOST', 'AtemKuot.mysql.pythonanywhere-services.com'),
+        'PORT': os.getenv('DB_PORT', '3306'),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        }
     }
 }
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -157,3 +169,16 @@ CORS_ALLOWED_ORIGINS = [
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
 
+# Static files
+STATIC_ROOT = '/home/AtemKuot/Pharmacy_Inventory_API/static'
+STATIC_URL = '/static/'
+
+# Security settings
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# For MySQL compatibility
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
