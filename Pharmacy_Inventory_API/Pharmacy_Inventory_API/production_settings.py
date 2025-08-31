@@ -8,10 +8,10 @@ ALLOWED_HOSTS = ['AtemKuot.pythonanywhere.com', 'localhost']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'yourusername$pharmacy_db'),
-        'USER': os.getenv('DB_USER', 'yourusername'),
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', 'yourusername.mysql.pythonanywhere-services.com'),
+        'NAME': os.getenv('DB_NAME', 'AtemKuot$Pharmacy_Inventroy'),
+        'USER': os.getenv('DB_USER', 'AtemKuot'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'Pythonanywhere#12345678'),
+        'HOST': os.getenv('DB_HOST', 'AtemKuot.mysql.pythonanywhere-services.com'),
         'PORT': os.getenv('DB_PORT', '3306'),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -21,7 +21,7 @@ DATABASES = {
 }
 
 # Static files
-STATIC_ROOT = '/home/yourusername/pharmacy_api/static'
+STATIC_ROOT = '/home/AtemKuot/Pharmacy_Inventory_API/static'
 STATIC_URL = '/static/'
 
 # Security settings
