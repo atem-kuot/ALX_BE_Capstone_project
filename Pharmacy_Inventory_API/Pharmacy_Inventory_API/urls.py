@@ -16,15 +16,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/core/', include('core.urls')),
-    path('api/medicines/', include('medicines.urls')),
-    path('api/prescriptions/', include('prescriptions.urls')),
-    path('api/alerts/', include('alerts.urls')),
-]from django.contrib import admin
-from django.urls import path, include
 from django.http import HttpResponse
 
 def home_view(request):
@@ -32,8 +23,9 @@ def home_view(request):
     <h1>🏥 Pharmacy Management API</h1>
     <p>API is running successfully!</p>
     <ul>
-        <li><a href="/api/auth/">Login</a></li>
+        <li><a href="/api/auth/login/">Login</a></li>
         <li><a href="/admin/">Admin</a></li>
+        <li><a href="/api/medicines/">Medicines API</a></li>
     </ul>
     """)
 
