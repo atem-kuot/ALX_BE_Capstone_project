@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import Http404, HttpResponseServerError
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,6 +12,21 @@ from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserSe
 from .permissions import IsAdmin
 
 # Template Views
+def home(request):
+    """Render the home page with registration, login, and about sections"""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+        
+    registration_form = UserRegistrationSerializer()
+    login_form = AuthenticationForm()
+    
+    context = {
+        'title': 'Pharmacy Inventory Management',
+        'registration_form': registration_form,
+        'login_form': login_form,
+    }
+    return render(request, 'home.html', context)
+
 @login_required
 def dashboard(request):
     """Render the dashboard page"""
