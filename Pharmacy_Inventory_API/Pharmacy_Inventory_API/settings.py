@@ -79,12 +79,14 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'Pharmacy_Inventory_API.urls'
 
 # Define template directory
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -182,6 +184,8 @@ AUTH_USER_MODEL = 'core.User'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React frontend
     "http://127.0.0.1:3000",
+    "https://AtemKuot.pythonanywhere.com"
+
 ]
 
 # Add Telegram configuration
