@@ -11,14 +11,12 @@ class User(AbstractUser):
     
     role = models.CharField(
         max_length=20,
-        choices=ROLE_CHOICES,
-        help_text="Determines user permissions and access level"
+        choices=ROLE_CHOICES
     )
     phone = models.CharField(
         max_length=20,
         blank=True,
-        null=True,
-        help_text="Format: +1234567890"
+        null=True
     )
     
     def clean(self):
