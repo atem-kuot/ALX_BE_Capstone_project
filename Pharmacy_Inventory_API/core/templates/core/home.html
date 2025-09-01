@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏥 Pharmacy Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1976d2;
+            --light-blue: #e3f2fd;
+            --dark-blue: #0d47a1;
+            --accent-blue: #42a5f5;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--white) 0%, var(--light-blue) 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+            background: var(--light-blue);
+        }
+
+        .nav-links a.active {
+            color: var(--primary-blue);
+            background: var(--light-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0;
+            text-align: center;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23e3f2fd"><path d="M0 50 Q250 0 500 50 Q750 100 1000 50 L1000 100 L0 100 Z"/></svg>') bottom no-repeat;
+            background-size: 100% auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-dark);
+            border: 2px solid var(--text-light);
+        }
+
+        .btn-outline:hover {
+            background: var(--text-dark);
+            color: var(--white);
+            border-color: var(--text-dark);
+        }
+
+        /* Stats Section */
+        .stats {
+            background: var(--white);
+            padding: 3rem 0;
+            margin: 2rem 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-card {
+            padding: 2rem;
+            background: var(--light-blue);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 3rem;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            font-size: 1.2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-blue);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .feature-card h3 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* User Roles Section */
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .role-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .role-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .role-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .role-card p {
+            color: var(--text-light);
+        }
+
+        /* Quick Links */
+        .quick-links {
+            background: var(--light-blue);
+            padding: 4rem 0;
+            border-radius: var(--border-radius);
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .link-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .link-card h4 {
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .link-card h4 i {
+            font-size: 1.5rem;
+        }
+
+        .link-card a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 0.8rem 0;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .link-card a:last-child {
+            border-bottom: none;
+        }
+
+        .link-card a:hover {
+            color: var(--primary-blue);
+            transform: translateX(5px);
+        }
+
+        .link-card a i {
+            color: var(--primary-blue);
+            width: 20px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-section p {
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .footer-section a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .mb-3 { margin-bottom: 3rem; }
+        .mt-3 { margin-top: 3rem; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <i class="fas fa-hospital"></i>
+                    PharmacyMS
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#stats">Statistics</a></li>
+                    <li><a href="#api-docs">API Docs</a></li>
+                    <li><a href="/admin/"><i class="fas fa-cog"></i> Admin</a></li>
+                    <li><a href="/api/auth/login/" class="active"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="animate">Pharmacy Management System</h1>
+            <p class="animate">Advanced healthcare management solution with real-time inventory tracking, electronic prescriptions, and smart notifications</p>
+            <div class="cta-buttons animate">
+                <a href="/api/auth/login/" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>Get Started
+                </a>
+                <a href="/api/auth/register/" class="btn btn-secondary">
+                    <i class="fas fa-user-plus"></i>Create Account
+                </a>
+                <a href="#api-docs" class="btn btn-outline">
+                    <i class="fas fa-book"></i>API Documentation
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats" id="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card animate">
+                    <div class="stat-number">{{ stats.medicines }}+</div>
+                    <div class="stat-label">Medicines</div>
+                </div>
+                <div class="stat-card animate">
+                    <div class="stat-number">{{ stats.prescriptions }}+</div>
+                    <div class="stat-label">Prescriptions</div>
+                </div>
+                <div class="stat-card animate">
+                    <div class="stat-number">{{ stats.users }}+</div>
+                    <div class="stat-label">Users</div>
+                </div>
+                <div class="stat-card animate">
+                    <div class="stat-number">{{ stats.alerts }}+</div>
+                    <div class="stat-label">Active Alerts</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <div class="container">
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">Comprehensive tools for modern pharmacy management</p>
+            
+            <div class="features-grid">
+                {% for feature in features %}
+                <div class="feature-card animate">
+                    <div class="feature-icon">{{ feature.icon }}</div>
+                    <h3>{{ feature.title }}</h3>
+                    <p>{{ feature.desc }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- User Roles Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Designed For Healthcare Professionals</h2>
+            <p class="section-subtitle">Tailored experience for different roles in the healthcare ecosystem</p>
+            
+            <div class="roles-grid">
+                {% for role in user_roles %}
+                <div class="role-card animate">
+                    <div class="role-icon">{{ role.icon }}</div>
+                    <h3>{{ role.role }}</h3>
+                    <p>{{ role.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Links Section -->
+    <section class="section quick-links">
+        <div class="container">
+            <h2 class="section-title">Quick Access</h2>
+            <p class="section-subtitle">Direct links to essential system features</p>
+            
+            <div class="links-grid">
+                <div class="link-card animate">
+                    <h4><i class="fas fa-lock"></i> Authentication</h4>
+                    <a href="/api/auth/login/"><i class="fas fa-sign-in-alt"></i>User Login</a>
+                    <a href="/api/auth/register/"><i class="fas fa-user-plus"></i>User Registration</a>
+                    <a href="/api/auth/token/refresh/"><i class="fas fa-sync-alt"></i>Token Refresh</a>
+                </div>
+                
+                <div class="link-card animate">
+                    <h4><i class="fas fa-pills"></i> Medicines</h4>
+                    <a href="/api/medicines/"><i class="fas fa-list"></i>List Medicines</a>
+                    <a href="/api/medicines/search/"><i class="fas fa-search"></i>Search Medicines</a>
+                    <a href="/api/medicines/alerts/low-stock/"><i class="fas fa-bell"></i>Stock Alerts</a>
+                </div>
+                
+                <div class="link-card animate">
+                    <h4><i class="fas fa-file-medical"></i> Prescriptions</h4>
+                    <a href="/api/prescriptions/"><i class="fas fa-list-alt"></i>List Prescriptions</a>
+                    <a href="/api/prescriptions/stats/"><i class="fas fa-chart-bar"></i>Statistics</a>
+                    <a href="/api/prescriptions/1/fulfill/"><i class="fas fa-check-circle"></i>Fulfill Prescription</a>
+                </div>
+                
+                <div class="link-card animate">
+                    <h4><i class="fas fa-cogs"></i> Management</h4>
+                    <a href="/admin/"><i class="fas fa-cog"></i>Admin Panel</a>
+                    <a href="/api/alerts/"><i class="fas fa-bell"></i>System Alerts</a>
+                    <a href="/api-docs/"><i class="fas fa-book"></i>API Documentation</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Pharmacy Management System</h3>
+                    <p>Comprehensive digital management solution built by Atem Kuot</p>
+                    <p>Version: {{ version }}</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">Home</a><br>
+                    <a href="/api-docs/">API Documentation</a><br>
+                    <a href="/admin/">Admin Dashboard</a><br>
+                    <a href="/api/auth/login/">User Login</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <p>ALX Backend Capstone Project</p>
+                    <p>Built with ❤️ for healthcare facilities</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Atem Kuot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Add animations on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.animate');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
