@@ -11,21 +11,32 @@ from .models import User
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserSerializer
 from .permissions import IsAdmin
 
-# Template Views
-def home(request):
-    """Render the home page with registration, login, and about sections"""
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-        
-    registration_form = UserRegistrationSerializer()
-    login_form = AuthenticationForm()
-    
-    context = {
-        'title': 'Pharmacy Inventory Management',
-        'registration_form': registration_form,
-        'login_form': login_form,
-    }
-    return render(request, 'home.html', context)
+
+class HomeView(APIView):
+    permission_classes = []
+
+    def get(self, request, *args, **kwargs):
+        context = {
+            'system_name': 'Pharmacy Management System',
+            'version': '1.0.0',
+            'stats': {
+                'medicines': 0,
+                'prescriptions': 0,
+                'users': 3,
+                'alerts': 0,
+            },
+            'features': [
+                {'icon': '💊', 'title': 'Inventory Tracking', 'desc': 'Real-time medicine stock management.'},
+                {'icon': '📄', 'title': 'Electronic Prescriptions', 'desc': 'E-prescription system for healthcare providers.'},
+                {'icon': '🔔', 'title': 'Smart Alerts', 'desc': 'Get notified for low stock and expired items.'},
+            ],
+            'user_roles': [
+                {'icon': '👨‍⚕️', 'role': 'Pharmacist', 'description': 'Manage medicines and prescriptions.'},
+                {'icon': '👩‍⚕️', 'role': 'Doctor', 'description': 'Create and track prescriptions.'},
+                {'icon': '🧑‍💼', 'role': 'Admin', 'description': 'Oversee system and manage staff.'},
+            ]
+        }
+        return render(request, 'core/home.html', context)
 
 @login_required
 def dashboard(request):
@@ -34,13 +45,13 @@ def dashboard(request):
         'title': 'Dashboard',
         'active_page': 'dashboard',
     }
-    return render(request, 'dashboard.html', context)
+    return render(request, 'core/dashboard.html', context)
 
 def login_view(request):
     """Handle user login"""
     if request.user.is_authenticated:
         return redirect('dashboard')
-        
+
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -58,8 +69,8 @@ def login_view(request):
             messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
-    
-    return render(request, 'registration/login.html', {'form': form})
+
+    return render(request, 'core/login.html', {'form': form})
 
 @login_required
 def logout_view(request):
@@ -67,10 +78,10 @@ def logout_view(request):
     from django.contrib.auth import logout
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
-    return redirect('login')
+    return redirect('HomeView')
 
 # Error Handlers
-def handler404(request, exception, template_name='errors/404.html'):
+def handler404(request, template_name='errors/404.html'):
     """
     404 Error handler
     """
@@ -81,7 +92,7 @@ def handler404(request, exception, template_name='errors/404.html'):
     }
     return render(request, template_name, context, status=404)
 
-def handler500(request, template_name='errors/500.html'):
+def handler500(request, template_name='core/errors/500.html'):
     """
     500 Error handler
     """
@@ -92,7 +103,7 @@ def handler500(request, template_name='errors/500.html'):
     }
     return render(request, template_name, context, status=500)
 
-def handler403(request, exception, template_name='errors/403.html'):
+def handler403(request, template_name='core/errors/403.html'):
     """
     403 Error handler
     """
@@ -103,7 +114,7 @@ def handler403(request, exception, template_name='errors/403.html'):
     }
     return render(request, template_name, context, status=403)
 
-def handler400(request, exception, template_name='errors/400.html'):
+def handler400(request, template_name='core/errors/400.html'):
     """
     400 Error handler
     """
@@ -114,38 +125,52 @@ def handler400(request, exception, template_name='errors/400.html'):
     }
     return render(request, template_name, context, status=400)
 
-class UserRegistrationView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserRegistrationSerializer
-    permission_classes = [permissions.AllowAny]
-    
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        
-        # Generate JWT tokens
-        refresh = RefreshToken.for_user(user)
-        
-        return Response({
-            'user': UserSerializer(user).data,
-            'refresh': str(refresh),
-            'access': str(refresh.access_token)
-        }, status=status.HTTP_201_CREATED)
+class UserRegistrationView(APIView):
+    permission_classes = []
+
+    def get(self, request):
+        """Render HTML registration page"""
+        return render(request, 'register.html')
+
+    def post(self, request):
+        """Handle registration API request"""
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                'user': UserSerializer(user).data,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token)
+            }, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserLoginView(APIView):
-    permission_classes = [permissions.AllowAny]
-    
+    permission_classes = []
+
+    def get(self, request):
+        """Render HTML login page"""
+        return render(request, 'core/login.html')
+
     def post(self, request):
+        """Handle login API request"""
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data['user']
             login(request, user)
-            
+
             refresh = RefreshToken.for_user(user)
-            
+
             return Response({
-                'user': UserSerializer(user).data,
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'role': user.role
+                },
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
             })
@@ -160,4 +185,4 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, IsAdmin]
-# Create your views here.
+
