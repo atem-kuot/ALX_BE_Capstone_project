@@ -20,10 +20,10 @@ class HomeView(APIView):
             'system_name': 'Pharmacy Management System',
             'version': '1.0.0',
             'stats': {
-                'medicines': 0,
-                'prescriptions': 0,
-                'users': 3,
-                'alerts': 0,
+                'medicines': 4800,
+                'prescriptions': 100,
+                'users': 10,
+                'alerts': 10,
             },
             'features': [
                 {'icon': '💊', 'title': 'Inventory Tracking', 'desc': 'Real-time medicine stock management.'},
