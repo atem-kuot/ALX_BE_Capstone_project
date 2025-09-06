@@ -15,11 +15,12 @@ urlpatterns = [
 
     # Admin
     path('admin/', admin.site.urls),
+    path("core/", include("django.contrib.auth.urls")),
 
     # Authentication
-    path('login/', views.LoginView.as_view(template_name='core/login.html'), name='login'),
-    path('logout/', views.LogoutView.as_view(next_page=HomeView), name='logout'),
-    path('register/', UserRegistrationView.as_view(), name='register'),
+    path('api/auth/login/', views.LoginView.as_view(template_name='core/login.html'), name='login'),
+    path('api/auth/logout/', views.LogoutView.as_view(next_page=HomeView), name='logout'),
+    path('api/auth/register/', UserRegistrationView.as_view(), name='register'),
 
     # Dashboard
     path('dashboard/', dashboard, name='dashboard'),

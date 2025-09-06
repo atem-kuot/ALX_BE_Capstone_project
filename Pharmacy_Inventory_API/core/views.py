@@ -9,8 +9,8 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from .models import User
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserSerializer
-from .permissions import IsAdmin
-
+from .permissions import IsAdmin    
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 
 class HomeView(APIView):
     permission_classes = []
@@ -127,26 +127,79 @@ def handler400(request, template_name='core/errors/400.html'):
 
 class UserRegistrationView(APIView):
     permission_classes = []
+    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
+    template_name = 'core/register.html'
 
     def get(self, request):
         """Render HTML registration page"""
-        return render(request, 'register.html')
+        if request.accepts('text/html'):
+            return Response(template_name='core/register.html')
+        return Response({'detail': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def post(self, request):
-        """Handle registration API request"""
-        serializer = UserRegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
+    def post(self, request, *args, **kwargs):
+        """Handle registration request (both API and form submissions)"""
+        try:
+            # Handle both form data and JSON
+            if request.content_type == 'application/x-www-form-urlencoded':
+                data = request.POST.dict()
+                data.pop('csrfmiddlewaretoken', None)  # Remove CSRF token if exists
+            else:
+                data = request.data.copy()
 
-            refresh = RefreshToken.for_user(user)
+            # Ensure required fields are present
+            required_fields = ['username', 'email', 'password', 'confirm_password', 'role']
+            for field in required_fields:
+                if field not in data:
+                    if request.accepts('application/json'):
+                        return Response(
+                            {'error': f'{field} is required'}, 
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+                    return Response(
+                        {'form_errors': {field: ['This field is required.']}},
+                        template_name='core/register.html',
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
 
-            return Response({
-                'user': UserSerializer(user).data,
-                'refresh': str(refresh),
-                'access': str(refresh.access_token)
-            }, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer = UserRegistrationSerializer(data=data)
+            
+            if serializer.is_valid():
+                user = serializer.save()
+                
+                if request.accepts('application/json'):
+                    refresh = RefreshToken.for_user(user)
+                    return Response({
+                        'user': UserSerializer(user).data,
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token)
+                    }, status=status.HTTP_201_CREATED)
+                
+                # For HTML form submission
+                return redirect('login')
+            
+            # Handle validation errors
+            if request.accepts('application/json'):
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            # For form submissions with errors
+            return Response(
+                {'form_errors': serializer.errors},
+                template_name='core/register.html',
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        except Exception as e:
+            error_msg = str(e)
+            if request.accepts('application/json'):
+                return Response(
+                    {'error': 'An error occurred during registration', 'details': error_msg},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            return Response(
+                {'form_errors': {'__all__': ['An error occurred. Please try again.']}},
+                template_name='core/register.html',
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class UserLoginView(APIView):
     permission_classes = []
@@ -174,6 +227,7 @@ class UserLoginView(APIView):
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
             })
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserListView(generics.ListAPIView):
