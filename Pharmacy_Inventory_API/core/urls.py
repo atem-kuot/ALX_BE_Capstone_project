@@ -1,11 +1,20 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenRefreshView
 from . import views
 
-urlpatterns = [
+app_name = 'core'
 
+urlpatterns = [
+    # Home page
     path('', views.HomeView.as_view(), name='home'),
-    path('api/auth/register/', views.UserRegistrationView.as_view(), name='register'),
-    path('api/auth/login/', views.UserLoginView.as_view(), name='login'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+
+    # Template-based authentication (for rendering HTML forms)
+    path('login/', views.login_page, name='login_page'),
+    path('register/', views.register_page, name='register_page'),
+
+    # API endpoints for authentication
+    path('api/auth/login/', views.UserLoginAPIView.as_view(), name='api_login'),
+    path('api/auth/register/', views.UserRegistrationAPIView.as_view(), name='api_register'),
+
+    # Dashboard
+    path('dashboard/', views.dashboard, name='dashboard'),
 ]
