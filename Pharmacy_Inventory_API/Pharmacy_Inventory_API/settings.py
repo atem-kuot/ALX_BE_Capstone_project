@@ -193,8 +193,35 @@ TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
 
 # Security settings
+# CSRF Configuration for HTTPS
 CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript access to CSRF token
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# Session settings
 SESSION_COOKIE_SECURE = True
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+# For PythonAnywhere HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Add your domain to CSRF trusted origins
+CSRF_TRUSTED_ORIGINS = [
+    'https://atemkuot.pythonanywhere.com',
+    'https://AtemKuot.pythonanywhere.com'  # Case sensitive
+]
+
+# CORS settings for HTTPS
+CORS_ALLOWED_ORIGINS = [
+    "https://atemkuot.pythonanywhere.com",
+    "https://AtemKuot.pythonanywhere.com"
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+
+
 SECURE_SSL_REDIRECT = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -202,5 +229,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 # For MySQL compatibility
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = "/" 
-LOGOUT_REDIRECT_URL = "/"  # new
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
