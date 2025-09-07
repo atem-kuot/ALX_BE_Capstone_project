@@ -429,32 +429,32 @@
             .hero h1 {
                 font-size: 2.5rem;
             }
-            
+
             .hero p {
                 font-size: 1.1rem;
             }
-            
+
             .nav {
                 flex-direction: column;
                 gap: 1rem;
             }
-            
+
             .nav-links {
                 gap: 1rem;
                 flex-wrap: wrap;
                 justify-content: center;
             }
-            
+
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .btn {
                 width: 100%;
                 justify-content: center;
             }
-            
+
             .section-title {
                 font-size: 2rem;
             }
@@ -506,12 +506,11 @@
             <h1 class="animate">Pharmacy Management System</h1>
             <p class="animate">Advanced healthcare management solution with real-time inventory tracking, electronic prescriptions, and smart notifications</p>
             <div class="cta-buttons animate">
-                <a href="/api/auth/login/" class="btn btn-primary">
+                <a href="/login/" class="btn btn-primary">
                     <i class="fas fa-sign-in-alt"></i>Get Started
                 </a>
-                <a href="/api/auth/register/" class="btn btn-secondary">
+                <a href="/register/" class="btn btn-secondary">
                     <i class="fas fa-user-plus"></i>Create Account
-                </a>
                 </a>
             </div>
         </div>
@@ -546,7 +545,7 @@
         <div class="container">
             <h2 class="section-title">Powerful Features</h2>
             <p class="section-subtitle">Comprehensive tools for modern pharmacy management</p>
-            
+
             <div class="features-grid">
                 {% for feature in features %}
                 <div class="feature-card animate">
@@ -562,9 +561,9 @@
     <!-- User Roles Section -->
     <section class="section">
         <div class="container">
-            <h2 class="section-title">Designed For Healthcare Facilities</h2>
+            <h2 class="section-title">Designed For Healthcare Facilities </h2>
             <p class="section-subtitle">Tailored experience for different roles in the healthcare ecosystem</p>
-            
+
             <div class="roles-grid">
                 {% for role in user_roles %}
                 <div class="role-card animate">
@@ -582,28 +581,28 @@
         <div class="container">
             <h2 class="section-title">Quick Access</h2>
             <p class="section-subtitle">Direct links to essential system features</p>
-            
+
             <div class="links-grid">
-                
+
                 <div class="link-card animate">
                     <h4><i class="fas fa-pills"></i> Medicines</h4>
                     <a href="/api/medicines/"><i class="fas fa-list"></i>List Medicines</a>
                     <a href="/api/medicines/search/"><i class="fas fa-search"></i>Search Medicines</a>
                     <a href="/api/medicines/alerts/low-stock/"><i class="fas fa-bell"></i>Stock Alerts</a>
                 </div>
-                
+
                 <div class="link-card animate">
                     <h4><i class="fas fa-file-medical"></i> Prescriptions</h4>
                     <a href="/api/prescriptions/"><i class="fas fa-list-alt"></i>List Prescriptions</a>
                     <a href="/api/prescriptions/stats/"><i class="fas fa-chart-bar"></i>Statistics</a>
                     <a href="/api/prescriptions/1/fulfill/"><i class="fas fa-check-circle"></i>Fulfill Prescription</a>
                 </div>
-                
+
                 <div class="link-card animate">
                     <h4><i class="fas fa-cogs"></i> Management</h4>
                     <a href="/admin/"><i class="fas fa-cog"></i>Admin Panel</a>
                     <a href="/api/alerts/"><i class="fas fa-bell"></i>System Alerts</a>
-                    <a href="/api/reports/"><i class="fas fa-file-alt"></i>Users List</a>
+                    <a href="/api-docs/"><i class="fas fa-book"></i>Users List</a>
                 </div>
             </div>
         </div>
@@ -615,26 +614,27 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Pharmacy Management System</h3>
-                    <p>Comprehensive digital management solution built by Atem Kuot</p>
+                    <p>Comprehensive digital management solution</p>
+                    <p> Built by Atem Kuot</p>
                     <p>Version: {{ version }}</p>
                 </div>
-                
+
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <a href="/">Home</a><br>
                     <a href="/admin/">Admin Dashboard</a><br>
                     <a href="/api/auth/login/">User Login</a>
                 </div>
-                
+
                 <div class="footer-section">
                     <h3>Support</h3>
                     <p>ALX Backend Capstone Project</p>
-                    <p>Built for healthcare facilities</p>
+                    <p>Built for Healthcare Facilities</p>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
-                <p>&copy; 2025 Atem Kuot. All rights reserved.</p>
+                <p>&copy; 2025 PharmacyMS. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -643,7 +643,7 @@
         // Add animations on scroll
         document.addEventListener('DOMContentLoaded', function() {
             const animatedElements = document.querySelectorAll('.animate');
-            
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -652,7 +652,7 @@
                     }
                 });
             }, { threshold: 0.1 });
-            
+
             animatedElements.forEach(el => {
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(30px)';
