@@ -351,5 +351,3 @@ For support and questions:
 - Review the [Django REST Framework documentation](https://www.django-rest-framework.org/)
 
 ---
-
-**Built with ❤️ using Django REST Framework**
