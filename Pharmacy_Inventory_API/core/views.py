@@ -1,16 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from rest_framework import generics, status, permissions
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
-from .models import User
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserSerializer
-from .permissions import IsAdmin    
-from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib import messages
+from django.contrib.auth.views import LoginView, LogoutView
 
 class HomeView(APIView):
     permission_classes = []
@@ -38,205 +35,42 @@ class HomeView(APIView):
         }
         return render(request, 'core/home.html', context)
 
-@login_required
-def dashboard(request):
-    """Render the dashboard page"""
-    context = {
-        'title': 'Dashboard',
-        'active_page': 'dashboard',
-    }
-    return render(request, 'core/dashboard.html', context)
 
-def login_view(request):
-    """Handle user login"""
-    if request.user.is_authenticated:
-        return redirect('dashboard')
 
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, f'Welcome back, {username}!')
-                next_url = request.POST.get('next') or 'dashboard'
-                return redirect(next_url)
-            else:
-                messages.error(request, 'Invalid username or password.')
-        else:
-            messages.error(request, 'Invalid username or password.')
-    else:
-        form = AuthenticationForm()
-
-    return render(request, 'core/login.html', {'form': form})
-
-@login_required
-def logout_view(request):
-    """Handle user logout"""
-    from django.contrib.auth import logout
-    logout(request)
-    messages.success(request, 'You have been logged out successfully.')
-    return redirect('HomeView')
-
-# Error Handlers
-def handler404(request, template_name='errors/404.html'):
-    """
-    404 Error handler
-    """
-    context = {
-        'title': 'Page Not Found',
-        'error_code': 404,
-        'error_message': 'The page you are looking for does not exist.'
-    }
-    return render(request, template_name, context, status=404)
-
-def handler500(request, template_name='core/errors/500.html'):
-    """
-    500 Error handler
-    """
-    context = {
-        'title': 'Server Error',
-        'error_code': 500,
-        'error_message': 'An error occurred while processing your request.'
-    }
-    return render(request, template_name, context, status=500)
-
-def handler403(request, template_name='core/errors/403.html'):
-    """
-    403 Error handler
-    """
-    context = {
-        'title': 'Permission Denied',
-        'error_code': 403,
-        'error_message': 'You do not have permission to access this page.'
-    }
-    return render(request, template_name, context, status=403)
-
-def handler400(request, template_name='core/errors/400.html'):
-    """
-    400 Error handler
-    """
-    context = {
-        'title': 'Bad Request',
-        'error_code': 400,
-        'error_message': 'The request could not be processed.'
-    }
-    return render(request, template_name, context, status=400)
 
 class UserRegistrationView(APIView):
     permission_classes = []
-    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
-    template_name = 'core/register.html'
-
     def get(self, request):
-        """Render HTML registration page"""
-        if request.accepts('text/html'):
-            return Response(template_name='core/register.html')
-        return Response({'detail': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def post(self, request, *args, **kwargs):
-        """Handle registration request (both API and form submissions)"""
-        try:
-            # Handle both form data and JSON
-            if request.content_type == 'application/x-www-form-urlencoded':
-                data = request.POST.dict()
-                data.pop('csrfmiddlewaretoken', None)  # Remove CSRF token if exists
-            else:
-                data = request.data.copy()
-
-            # Ensure required fields are present
-            required_fields = ['username', 'email', 'password', 'confirm_password', 'role']
-            for field in required_fields:
-                if field not in data:
-                    if request.accepts('application/json'):
-                        return Response(
-                            {'error': f'{field} is required'}, 
-                            status=status.HTTP_400_BAD_REQUEST
-                        )
-                    return Response(
-                        {'form_errors': {field: ['This field is required.']}},
-                        template_name='core/register.html',
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-
-            serializer = UserRegistrationSerializer(data=data)
-            
-            if serializer.is_valid():
-                user = serializer.save()
-                
-                if request.accepts('application/json'):
-                    refresh = RefreshToken.for_user(user)
-                    return Response({
-                        'user': UserSerializer(user).data,
-                        'refresh': str(refresh),
-                        'access': str(refresh.access_token)
-                    }, status=status.HTTP_201_CREATED)
-                
-                # For HTML form submission
-                return redirect('login')
-            
-            # Handle validation errors
-            if request.accepts('application/json'):
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
-            # For form submissions with errors
-            return Response(
-                {'form_errors': serializer.errors},
-                template_name='core/register.html',
-                status=status.HTTP_400_BAD_REQUEST
-            )
-            
-        except Exception as e:
-            error_msg = str(e)
-            if request.accepts('application/json'):
-                return Response(
-                    {'error': 'An error occurred during registration', 'details': error_msg},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
-            return Response(
-                {'form_errors': {'__all__': ['An error occurred. Please try again.']}},
-                template_name='core/register.html',
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-class UserLoginView(APIView):
-    permission_classes = []
-
-    def get(self, request):
-        """Render HTML login page"""
-        return render(request, 'core/login.html')
+        form = UserCreationForm()
+        return render(request, "core/register.html", {"form": form})
 
     def post(self, request):
-        """Handle login API request"""
-        serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.validated_data['user']
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
             login(request, user)
+            return redirect("core/login")
+        return render(request, "core/register.html", {"form": form})
 
-            refresh = RefreshToken.for_user(user)
 
-            return Response({
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                    'role': user.role
-                },
-                'refresh': str(refresh),
-                'access': str(refresh.access_token)
-            })
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class UserLoginView(LoginView):
+    """Use built-in LoginView"""
+    template_name = "core/login.html"
+    authentication_form = AuthenticationForm
 
-class UserListView(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated, IsAdmin]
+@login_required
+def dashboard(request):
+    context = {
+        "title": "Dashboard",
+        "active_page": "dashboard",
+    }
+    messages.info(request, f"Welcome back, {request.user.first_name}!")
+    return render(request, "core/dashboard.html", context)
 
-class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated, IsAdmin]
+class UserLogoutView(LogoutView):
+    """Use built-in LogoutView"""
+    template_name = "core/logout.html"
+    next_page = "core/home.html"
+
+
 
