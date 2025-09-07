@@ -6,7 +6,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views
-from core.views import dashboard, UserRegistrationView, HomeView
+from core.views import dashboard, HomeView
 
 
 
@@ -20,7 +20,7 @@ urlpatterns = [
     # Authentication
     path('api/auth/login/', views.LoginView.as_view(template_name='core/login.html'), name='login'),
     path('api/auth/logout/', views.LogoutView.as_view(next_page=HomeView), name='logout'),
-    path('api/auth/register/', UserRegistrationView.as_view(), name='register'),
+    path('api/auth/register/', views.UserRegistrationView.as_view(), name='register'),
 
     # Dashboard
     path('dashboard/', dashboard, name='dashboard'),

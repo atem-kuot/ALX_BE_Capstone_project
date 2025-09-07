@@ -1,164 +1,197 @@
-# Pharmacy Inventory Management API
+<div align="center">
+  <h1>🏥 Pharmacy Inventory Management API</h1>
+  <p>A comprehensive Django REST API for modern pharmacy operations</p>
+  
+  [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+  [![Django](https://img.shields.io/badge/Django-4.2-brightgreen.svg)](https://www.djangoproject.com/)
+  [![DRF](https://img.shields.io/badge/DRF-3.14.0-red.svg)](https://www.django-rest-framework.org/)
+  [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+</div>
 
-A comprehensive Django REST API for managing pharmacy inventory, prescriptions, and alerts. This system provides role-based access control for doctors, pharmacists, and administrators to efficiently manage medicine stock, patient prescriptions, and automated notifications.
+## ✨ Features
 
-## 🚀 Features
+### 📦 Inventory Management
+- Real-time stock monitoring & alerts
+- Batch and expiry tracking
+- Supplier management
+- Automated reordering
 
-- **Medicine Inventory Management** - Track stock levels, expiry dates, and supplier information
-- **Prescription Management** - Handle patient prescriptions with automated inventory updates
-- **Smart Alert System** - Automated notifications for low stock, expiring medicines, and urgent prescriptions
-- **Role-Based Access Control** - Separate permissions for doctors, pharmacists, and administrators
-- **Telegram Integration** - Real-time notifications via Telegram bot
-- **Comprehensive Logging** - Full audit trail of inventory changes
-- **RESTful API** - Clean, well-documented API endpoints
+### 📝 Prescription Workflow
+- Digital prescriptions
+- Stock validation
+- Fulfillment tracking
+- Patient history
+
+### 🔔 Smart Alerts
+- Low stock warnings
+- Expiry notifications
+- Prescription status updates
+- Customizable thresholds
+
+### 🔒 Security
+- JWT Authentication
+- Role-based access
+- Activity logging
+- Secure endpoints
 
 ## 📋 Table of Contents
 
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [API Endpoints](#api-endpoints)
-- [Models Overview](#models-overview)
-- [Alert System](#alert-system)
-- [Management Commands](#management-commands)
-- [Authentication](#authentication)
-- [Usage Examples](#usage-examples)
-- [Contributing](#contributing)
+- [Quick Start](#-quick-start)
+- [Project Structure](#-project-structure)
+- [API Documentation](#-api-documentation)
+- [Authentication](#-authentication)
+- [Deployment](#-deployment)
+- [Testing](#-testing)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-## 📁 Project Structure
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8+
+- PostgreSQL/SQLite
+- pip
+
+### Installation
+
+```bash
+# Clone repository
+git clone https://github.com/yourusername/Pharmacy_Inventory_API.git
+cd Pharmacy_Inventory_API
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment
+cp .env.example .env
+# Edit .env with your settings
+
+# Run migrations
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+sqlmigrate
+# Start development server
+python manage.py runserver
+```
+
+## 🏗 Project Structure
 
 ```
 Pharmacy_Inventory_API/
-├── Pharmacy_Inventory_API/          # Main project configuration
-│   ├── __init__.py
-│   ├── settings.py                  # Django settings and configuration
-│   ├── urls.py                      # Main URL routing
-│   ├── wsgi.py                      # WSGI configuration
-│   └── asgi.py                      # ASGI configuration
-├── core/                            # Core application (User management)
-│   ├── models.py                    # User model with role-based permissions
-│   ├── views.py                     # Authentication and user management views
-│   ├── urls.py                      # Core app URL patterns
-│   ├── serializers.py               # User serializers
-│   ├── permissions.py               # Custom permission classes
-│   └── telegram_service.py          # Telegram bot integration
-├── medicines/                       # Medicine inventory management
-│   ├── models.py                    # Medicine, Supplier, Patient, InventoryLog models
-│   ├── views.py                     # Medicine CRUD operations
-│   ├── urls.py                      # Medicine app URL patterns
-│   ├── serializers.py               # Medicine serializers
-│   └── admin.py                     # Django admin configuration
-├── prescriptions/                   # Prescription management
-│   ├── models.py                    # Prescription and related models
-│   ├── views.py                     # Prescription handling views
-│   ├── urls.py                      # Prescription URL patterns
-│   └── serializers.py               # Prescription serializers
-├── alerts/                          # Alert and notification system
-│   ├── models.py                    # AlertLog and AlertPreference models
-│   ├── views.py                     # Alert management views
-│   ├── urls.py                      # Alert URL patterns
-│   ├── serializers.py               # Alert serializers
-│   └── management/
-│       └── commands/
-│           └── send_daily_digest.py # Daily alert digest command
-└── manage.py                        # Django management script
+├── core/            # Authentication & user management
+├── medicines/       # Inventory management
+├── prescriptions/   # Prescription handling
+├── alerts/          # Notification system
+└── config/          # Project configuration
 ```
 
-## 🛠 Installation
-
-### Prerequisites
-
-- Python 3.8+
-- PostgreSQL (for production) or SQLite (for development)
-- Django 5.2.5
-- Django REST Framework
-
-### Setup Steps
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd ALX_BE_Capstone_project/Pharmacy_Inventory_API
-   ```
-
-2. **Create virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install django djangorestframework djangorestframework-simplejwt psycopg2-binary python-telegram-bot
-   ```
-
-4. **Environment Configuration**
-   Create a `.env` file in the project root:
-   ```env
-   SECRET_KEY=your-secret-key-here
-   DEBUG=True
-   DB_USER=your-db-user
-   DB_PASSWORD=your-db-password
-   DB_HOST=localhost
-   TELEGRAM_BOT_TOKEN=your-telegram-bot-token
-   TELEGRAM_CHAT_ID=your-telegram-chat-id
-   ```
-
-5. **Database Setup**
-   ```bash
-   python manage.py makemigrations
-   python manage.py migrate
-   python manage.py createsuperuser
-   ```
-
-6. **Run the server**
-   ```bash
-   python manage.py runserver
-   ```
-
-## ⚙️ Configuration
-
-### Database Configuration
-
-The project supports both SQLite (development) and PostgreSQL (production). Configuration is in [`settings.py`](Pharmacy_Inventory_API/settings.py).
-
-### JWT Authentication
-
-JWT tokens are configured with:
-- **Access Token Lifetime**: 1 hour
-- **Refresh Token Lifetime**: 7 days
-
-### Telegram Integration
-
-Configure Telegram notifications by setting:
-- `TELEGRAM_BOT_TOKEN`: Your bot token from BotFather
-- `TELEGRAM_CHAT_ID`: Default chat ID for notifications
-
-## 🔗 API Endpoints
+## 📚 API Documentation
 
 ### Authentication
-- `POST /api/core/auth/login/` - User login
-- `POST /api/core/auth/refresh/` - Refresh JWT token
-- `POST /api/core/auth/register/` - User registration
+- `POST /api/auth/login/` - User login
+- `POST /api/auth/refresh/` - Refresh token
+- `POST /api/auth/register/` - Register new user (Admin only)
 
-### Medicine Management
+### Medicines
 - `GET /api/medicines/` - List all medicines
-- `POST /api/medicines/` - Create new medicine
+- `POST /api/medicines/` - Add new medicine
 - `GET /api/medicines/{id}/` - Get medicine details
 - `PUT /api/medicines/{id}/` - Update medicine
 - `DELETE /api/medicines/{id}/` - Delete medicine
 
+### Prescriptions
+- `GET /api/prescriptions/` - List prescriptions
+- `POST /api/prescriptions/` - Create prescription
+- `GET /api/prescriptions/{id}/` - Get details
+- `PUT /api/prescriptions/{id}/fulfill/` - Fulfill prescription
+
+## 🔐 Authentication
+
+Uses JWT with role-based access control:
+
+```python
+# Example login request
+POST /api/auth/login/
+{
+    "username": "pharmacist1",
+    "password": "securepassword123"
+}
+```
+
+## 🚀 Deployment
+
+### Production
+```bash
+# Install Gunicorn
+pip install gunicorn
+
+# Run with Gunicorn
+gunicorn --workers 3 --bind 0.0.0.0:8000 config.wsgi:application
+```
+
+### Docker
+```bash
+docker-compose up -d --build
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
+```
+
+## 🧪 Testing
+
+```bash
+# Run tests
+python manage.py test
+
+# With coverage
+coverage run manage.py test
+coverage report
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+
+### 🔍 API Reference
+
+### Authentication
+- `POST /api/core/auth/login/` - User login
+- `POST /api/core/auth/refresh/` - Refresh JWT token
+- `POST /api/core/auth/register/` - Register new user (Admin only)
+- `GET /api/core/auth/me/` - Get current user info
+
+### Medicine Management
+- `GET /api/medicines/` - List medicines
+- `POST /api/medicines/` - Add medicine
+- `GET /api/medicines/{id}/` - Get medicine details
+- `PUT /api/medicines/{id}/` - Update medicine
+- `DELETE /api/medicines/{id}/` - Delete medicine
+- `GET /api/medicines/low-stock/` - List low stock items
+
 ### Prescription Management
 - `GET /api/prescriptions/` - List prescriptions
 - `POST /api/prescriptions/` - Create prescription
-- `GET /api/prescriptions/{id}/` - Get prescription details
+- `GET /api/prescriptions/{id}/` - Get details
 - `PUT /api/prescriptions/{id}/fulfill/` - Fulfill prescription
 
-### Alert Management
+### Alert System
 - `GET /api/alerts/` - List alerts
 - `POST /api/alerts/{id}/resolve/` - Resolve alert
-- `GET /api/alerts/preferences/` - Get user alert preferences
-- `PUT /api/alerts/preferences/` - Update alert preferences
+- `GET /api/alerts/preferences/` - Get alert settings
 
 ## 📊 Models Overview
 

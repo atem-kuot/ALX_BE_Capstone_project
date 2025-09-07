@@ -3,11 +3,9 @@ from django.contrib.auth import authenticate
 from .models import User
 
 
-
-
-
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
+    confirm_password = serializers.CharField(write_only=True)  
     
     class Meta:
         model = User
@@ -16,7 +14,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},
             'role': {'required': True}
         }
-    
+        
     def validate(self, data):
         if data['password'] != data['confirm_password']:
             raise serializers.ValidationError("Passwords do not match.")
