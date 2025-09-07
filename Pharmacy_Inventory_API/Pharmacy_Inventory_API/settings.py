@@ -182,11 +182,13 @@ AUTH_USER_MODEL = 'core.User'
 
 # CORS settings (adjust for production)
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React frontend
+    "http://localhost:3000",  
     "http://127.0.0.1:3000",
     "https://AtemKuot.pythonanywhere.com"
 
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Add Telegram configuration
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
@@ -212,13 +214,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://AtemKuot.pythonanywhere.com'  # Case sensitive
 ]
 
-# CORS settings for HTTPS
-CORS_ALLOWED_ORIGINS = [
-    "https://atemkuot.pythonanywhere.com",
-    "https://AtemKuot.pythonanywhere.com"
-]
 
-CORS_ALLOW_CREDENTIALS = True
 
 
 
@@ -229,6 +225,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 # For MySQL compatibility
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/"
 
