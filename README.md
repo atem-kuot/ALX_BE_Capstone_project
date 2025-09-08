@@ -1,6 +1,6 @@
 <div align="center">
-  <h1>🏥 Pharmacy Inventory Management API</h1>
-  <p>A comprehensive Django REST API for modern pharmacy operations</p>
+  <h1>🏥 Pharmacy Management System</h1>
+  <p>Advanced healthcare management solution with real-time inventory tracking, electronic prescriptions, and smart notifications</p>
   
   [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
   [![Django](https://img.shields.io/badge/Django-4.2-brightgreen.svg)](https://www.djangoproject.com/)
@@ -15,24 +15,29 @@
 - Batch and expiry tracking
 - Supplier management
 - Automated reordering
+- Barcode/QR code support
+- Multi-location inventory tracking
 
-### 📝 Prescription Workflow
-- Digital prescriptions
-- Stock validation
-- Fulfillment tracking
-- Patient history
+### 💊 Prescription Management
+- Digital prescription processing with e-signatures
+- Real-time stock validation
+- Automated prescription status updates
+- Comprehensive patient medication history
+- Prescription analytics and reporting
 
-### 🔔 Smart Alerts
-- Low stock warnings
-- Expiry notifications
+### 🔔 Smart Alerts & Analytics
+- Real-time low stock warnings
+- Medicine expiry notifications
 - Prescription status updates
-- Customizable thresholds
+- Customizable alert thresholds
+- Sales and inventory analytics dashboard
 
-### 🔒 Security
-- JWT Authentication
-- Role-based access
-- Activity logging
-- Secure endpoints
+### 🔒 Security & Compliance
+- JWT Authentication with refresh tokens
+- Role-based access control (Admin, Pharmacist, Staff)
+- Comprehensive activity audit logging
+- HIPAA/GDPR compliant data handling
+- API rate limiting and throttling
 
 ## 📋 Table of Contents
 
