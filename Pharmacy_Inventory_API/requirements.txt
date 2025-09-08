@@ -15,4 +15,6 @@ whitenoise
 pytest
 pytest-django
 pytest-cov
-
+pyyaml
+uritemplate
+drf-yasg
