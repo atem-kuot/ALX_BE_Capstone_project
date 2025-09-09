@@ -76,8 +76,8 @@ Get started with the Pharmacy Inventory API in minutes.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/pharmacy-inventory.git
-   cd pharmacy-inventory
+   git clone https://github.com/atem-kuot/ALX_BE_Capstone_project.git
+   cd Pharmacy_Inventory_API
    ```
 
 2. **Set up a virtual environment**
@@ -102,6 +102,7 @@ Get started with the Pharmacy Inventory API in minutes.
 
 5. **Run migrations**
    ```bash
+   python manage.py makemigrations
    python manage.py migrate
    ```
 
@@ -378,8 +379,8 @@ Authorization: Bearer your_access_token_here
 3. **Deploy Application**
    ```bash
    # Clone repository
-   git clone https://github.com/yourusername/pharmacy-inventory.git /opt/pharmacy-inventory
-   cd /opt/pharmacy-inventory
+   git clone https://github.com/atem-kuot/ALX_BE_Capstone_project.git/opt/pharmacy-inventory
+   cd /opt/Pharmacy_Inventory_API
    
    # Create virtual environment
    python3 -m venv venv
