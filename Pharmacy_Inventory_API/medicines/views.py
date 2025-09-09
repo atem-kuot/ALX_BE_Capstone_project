@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from django.db.models import Q, F
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ValidationError
 from .models import Medicine, Supplier
 from core.pagination import CustomPageNumberPagination
 from .serializers import MedicineSerializer, SupplierSerializer, MedicineStockUpdateSerializer
@@ -44,6 +45,19 @@ class SupplierListView(generics.ListCreateAPIView):
         Optimized to reduce database load by selecting specific fields.
         """
         return Supplier.objects.all().only('id', 'name', 'contact_person', 'email', 'phone', 'Date_Added')
+    
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        - GET: Any authenticated user can view
+        - POST: Only admin or pharmacist can create
+        """
+        if self.request.method == 'GET':
+            return [permissions.IsAuthenticated()]
+        # For POST, check if user is either admin or pharmacist
+        if self.request.user.role in ['ADMIN', 'PHARMACIST']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAuthenticated(), permissions.IsAdminUser()]  # This will deny access
 
 class SupplierDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -81,8 +95,8 @@ class MedicineListView(generics.ListCreateAPIView):
     API endpoint that allows medicines to be viewed or created.
     
     ### Permissions:
-    - User must be authenticated
-    - Only admin/pharmacist can create new medicines (POST)
+    - User must be authenticated to view (GET)
+    - User must be admin or pharmacist to create (POST)
     
     ### Query Parameters:
     - `search` (string): Search by name or description
@@ -139,7 +153,10 @@ class MedicineListView(generics.ListCreateAPIView):
     
     def get_permissions(self):
         if self.request.method == 'POST':
-            return [permissions.IsAuthenticated(), IsAdmin() or IsPharmacist()]
+            # For POST requests, check if user is either admin or pharmacist
+            if self.request.user.role in ['ADMIN', 'PHARMACIST']:
+                return [permissions.IsAuthenticated()]
+            return [permissions.IsAuthenticated(), permissions.IsAdminUser()]  # This will deny access
         return [permissions.IsAuthenticated()]
 
 class MedicineDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -176,10 +193,15 @@ class MedicineDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
+        - GET: Any authenticated user can view
+        - PUT/PATCH/DELETE: Only ADMIN or PHARMACIST can update/delete
         """
-        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
-            return [permissions.IsAuthenticated(), IsAdmin() or IsPharmacist()]
-        return [permissions.IsAuthenticated()]
+        if self.request.method == 'GET':
+            return [permissions.IsAuthenticated()]
+        # For PUT/PATCH/DELETE, check if user is either admin or pharmacist
+        if self.request.user.role in ['ADMIN', 'PHARMACIST']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAuthenticated(), permissions.IsAdminUser()]  # This will deny access
 
 class MedicineSearchView(generics.ListAPIView):
     """

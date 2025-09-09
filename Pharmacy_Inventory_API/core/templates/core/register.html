@@ -214,7 +214,7 @@
             successDiv.style.display = 'none';
             
             try {
-                const response = await fetch(form.action || '/api/auth/register/', {
+                const response = await fetch(form.action || '/register/', {
                     method: 'POST',
                     body: formData,
                     headers: {

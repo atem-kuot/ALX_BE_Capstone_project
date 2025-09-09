@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,18 +24,22 @@ SECRET_KEY = 'django-insecure-+4&dau-!z=iqau(u=!d3$#-v)&s-f*6e9p78qj(dru$=1*(6+l
 LOG_DIR = os.path.join(BASE_DIR, 'logs')
 os.makedirs(LOG_DIR, exist_ok=True)
 
+# Environment detection
+IS_PRODUCTION = os.getenv('DJANGO_ENV') == 'production'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
-# set DEBUG to False in production
-DEBUG = False
-ALLOWED_HOSTS = ['AtemKuot.pythonanywhere.com']
+DEBUG = not IS_PRODUCTION  # True for development, False for production
+
+# Allowed hosts based on environment
+if IS_PRODUCTION:
+    ALLOWED_HOSTS = ['AtemKuot.pythonanywhere.com']
+else:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -57,6 +62,31 @@ INSTALLED_APPS = [
     'prescriptions',
 ]
 
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# Add debug toolbar for development
+if not IS_PRODUCTION:
+    try:
+        import debug_toolbar
+        INSTALLED_APPS.append('debug_toolbar')
+        MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
+        
+        # Debug toolbar settings
+        INTERNAL_IPS = [
+            '127.0.0.1',
+            'localhost',
+        ]
+    except ImportError:
+        pass
 
 # Logging Configuration
 LOGGING = {
@@ -65,6 +95,10 @@ LOGGING = {
     'formatters': {
         'simple': {
             'format': '{levelname} {message}',
+            'style': '{',
+        },
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
             'style': '{',
         },
     },
@@ -76,15 +110,15 @@ LOGGING = {
             'formatter': 'simple'
         },
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG' if DEBUG else 'INFO',
             'class': 'logging.StreamHandler',
-            'formatter': 'simple'
+            'formatter': 'verbose' if DEBUG else 'simple'
         },
     },
     'loggers': {
         'django': {
             'handlers': ['file', 'console'],
-            'level': 'INFO',
+            'level': 'INFO',  # Changed to INFO for cleaner output
             'propagate': True,
         },
     },
@@ -100,7 +134,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,  # Default page size
-
 }
 
 SIMPLE_JWT = {
@@ -108,28 +141,16 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
 
 ROOT_URLCONF = 'Pharmacy_Inventory_API.urls'
 
-# Define template directory
-
+# Template configuration
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
         ],
-
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -146,24 +167,33 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Pharmacy_Inventory_API.wsgi.application'
 
-
-# MySQL database configuration for PythonAnywhere
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'AtemKuot$Pharmacy_Inventroy'),
-        'USER': os.getenv('DB_USER', 'AtemKuot'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'Pythonanywhere#12345678'),
-        'HOST': os.getenv('DB_HOST', 'AtemKuot.mysql.pythonanywhere-services.com'),
-        'PORT': os.getenv('DB_PORT', '3306'),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
+# Database configuration
+if IS_PRODUCTION:
+    # MySQL database configuration for PythonAnywhere
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('DB_NAME', 'AtemKuot$Pharmacy_Inventroy'),
+            'USER': os.getenv('DB_USER', 'AtemKuot'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'Pythonanywhere#12345678'),
+            'HOST': os.getenv('DB_HOST', 'AtemKuot.mysql.pythonanywhere-services.com'),
+            'PORT': os.getenv('DB_PORT', '3306'),
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                'charset': 'utf8mb4',
+            }
         }
     }
-}
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+else:
+    # SQLite for development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -179,26 +209,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-# URL to use when referring to static files (in templates, etc.)
 STATIC_URL = '/static/'
-
-# The absolute path to the directory where collectstatic will collect static files for deployment.
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Additional locations of static files
@@ -211,8 +229,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Authentication backends
@@ -223,48 +239,43 @@ AUTHENTICATION_BACKENDS = [
 # Custom user model
 AUTH_USER_MODEL = 'core.User'
 
-# CORS settings (adjust for production)
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  
-    "http://127.0.0.1:3000",
-    "https://AtemKuot.pythonanywhere.com"
-
-]
+# CORS settings based on environment
+if IS_PRODUCTION:
+    CORS_ALLOWED_ORIGINS = [
+        "https://AtemKuot.pythonanywhere.com",
+        "https://atemKuot.pythonanywhere.com"
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:8000",  
+        "http://127.0.0.1:8000",
+        "http://localhost:3000",  # For frontend development
+        "http://127.0.0.1:3000",
+    ]
 
 CORS_ALLOW_CREDENTIALS = True
 
+# Security settings - environment specific
+if IS_PRODUCTION:
+    # Production security settings
+    SECURE_SSL_REDIRECT = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript access to CSRF token
+    CSRF_USE_SESSIONS = False
+    CSRF_COOKIE_SAMESITE = 'Lax'
+    SESSION_SAVE_EVERY_REQUEST = True
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+else:
+    # Development security settings (more relaxed)
+    SECURE_SSL_REDIRECT = False
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
+    # Don't set SECURE_PROXY_SSL_HEADER in development
 
-# Security settings
-# CSRF Configuration for HTTPS
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript access to CSRF token
-CSRF_USE_SESSIONS = False
-CSRF_COOKIE_SAMESITE = 'Lax'
-
-# Session settings
-SESSION_COOKIE_SECURE = True
-SESSION_SAVE_EVERY_REQUEST = True
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-# For PythonAnywhere HTTPS
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-# Add your domain to CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = [
-    'https://atemkuot.pythonanywhere.com',
-    'https://AtemKuot.pythonanywhere.com'  # Case sensitive
-]
-
-
-
-
-
-SECURE_SSL_REDIRECT = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-
-# For MySQL compatibility
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+# Login/Logout redirect URLs
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/"
-

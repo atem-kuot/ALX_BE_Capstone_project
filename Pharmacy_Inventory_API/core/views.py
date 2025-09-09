@@ -116,7 +116,6 @@ class UserRegistrationView(APIView):
 
 class UserLoginView(LoginView):
     """Template-based login view"""
-    template_name = "core/login.html"
     authentication_form = AuthenticationForm
 
 

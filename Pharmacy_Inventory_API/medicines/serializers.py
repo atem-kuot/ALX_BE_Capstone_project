@@ -112,7 +112,7 @@ class MedicineSerializer(serializers.ModelSerializer):
             'id', 'name', 'description', 'category', 'category_display', 
             'quantity', 'dosage', 'expiry_date', 'threshold_alert', 
             'supplier', 'supplier_name', 'is_active', 'is_expired', 
-            'is_low_stock', 'Date_Added', 'Last_Updated', 'batch_number',
+            'is_low_stock', 'Date_Added', 'Last_Updated',
             'manufacturer', 'price', 'reorder_level'
         ]
         read_only_fields = ('Date_Added', 'Last_Updated', 'is_expired', 'is_low_stock')
@@ -121,13 +121,6 @@ class MedicineSerializer(serializers.ModelSerializer):
                 'error_messages': {
                     'blank': 'Medicine name cannot be blank.',
                     'max_length': 'Name cannot be longer than 200 characters.'
-                }
-            },
-            'batch_number': {
-                'required': True,
-                'error_messages': {
-                    'blank': 'Batch number is required.',
-                    'unique': 'This batch number already exists.'
                 }
             },
             'expiry_date': {
@@ -176,13 +169,6 @@ class MedicineSerializer(serializers.ModelSerializer):
         if not value or not value.strip():
             raise serializers.ValidationError("Medicine name cannot be empty.")
         return value.strip()
-    
-    def validate_batch_number(self, value):
-        """Validate batch number format."""
-        if not value or not value.strip():
-            raise serializers.ValidationError("Batch number is required.")
-        # Add any specific batch number validation logic here
-        return value.strip().upper()
     
     def validate_expiry_date(self, value):
         """Ensure expiry date is in the future."""
