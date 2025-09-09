@@ -1,74 +1,493 @@
 <div align="center">
-  <h1>🏥 Pharmacy Management System</h1>
-  <p>Advanced healthcare management solution with real-time inventory tracking, electronic prescriptions, and smart notifications</p>
+  <h1>🏥 Pharmacy Inventory Management System</h1>
+  <p>Modern, scalable, and secure RESTful API for managing pharmacy inventory, prescriptions, and healthcare operations</p>
   
   [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
   [![Django](https://img.shields.io/badge/Django-4.2-brightgreen.svg)](https://www.djangoproject.com/)
   [![DRF](https://img.shields.io/badge/DRF-3.14.0-red.svg)](https://www.django-rest-framework.org/)
+  [![SQLite](https://img.shields.io/badge/SQLite-3.36+-blue.svg)](https://www.sqlite.org/)
+  [![Docker](https://img.shields.io/badge/Docker-20.10+-blue.svg)](https://www.docker.com/)
   [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+  [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+  [![CI/CD](https://github.com/yourusername/pharmacy-inventory/actions/workflows/django.yml/badge.svg)](https://github.com/yourusername/pharmacy-inventory/actions)
 </div>
 
-## ✨ Features
+## ✨ Key Features
 
-### 📦 Inventory Management
-- Real-time stock monitoring & alerts
-- Batch and expiry tracking
-- Supplier management
-- Automated reordering
-- Barcode/QR code support
-- Multi-location inventory tracking
+### 📦 Advanced Inventory Management
+- Real-time stock monitoring with automated alerts
+- Batch and expiry tracking with proactive notifications
+- Supplier management with performance metrics
+- Intelligent automated reordering system
+- Barcode/QR code integration for quick scanning
+- Multi-location inventory synchronization
 
-### 💊 Prescription Management
-- Digital prescription processing with e-signatures
-- Real-time stock validation
-- Automated prescription status updates
-- Comprehensive patient medication history
-- Prescription analytics and reporting
+### 💊 Comprehensive Prescription System
+- Digital prescription processing with e-signature support
+- Real-time medication availability validation
+- Automated prescription status tracking
+- Complete patient medication history
+- Advanced analytics and reporting tools
+- Prescription-to-inventory integration
 
-### 🔔 Smart Alerts & Analytics
-- Real-time low stock warnings
-- Medicine expiry notifications
-- Prescription status updates
-- Customizable alert thresholds
-- Sales and inventory analytics dashboard
+### 📊 Business Intelligence
+- Real-time sales analytics dashboard
+- Inventory turnover and performance metrics
+- Custom report generation
+- Revenue and profit analysis
+- Patient adherence tracking
+- Expiry and waste management reports
 
-### 🔒 Security & Compliance
+### 🔒 Enterprise-Grade Security
 - JWT Authentication with refresh tokens
-- Role-based access control (Admin, Pharmacist, Staff)
-- Comprehensive activity audit logging
-- HIPAA/GDPR compliant data handling
-- API rate limiting and throttling
+- Granular role-based access control (RBAC)
+- Comprehensive audit logging
+- HIPAA/GDPR compliant data protection
+- API rate limiting and DDoS protection
+- Regular security audits and updates
 
 ## 📋 Table of Contents
 
-- [Quick Start](#-quick-start)
-- [Project Structure](#-project-structure)
-- [API Documentation](#-api-documentation)
-- [Authentication](#-authentication)
-- [Deployment](#-deployment)
-- [Testing](#-testing)
-- [Contributing](#-contributing)
+- [🚀 Quick Start](#-quick-start)
+- [🏗️ Project Structure](#%EF%B8%8F-project-structure)
+- [🔌 Requirements](#-requirements)
+- [⚙️ Configuration](#%EF%B8%8F-configuration)
+- [📚 API Documentation](#-api-documentation)
+- [🔐 Authentication](#-authentication)
+- [🐳 Docker Deployment](#-docker-deployment)
+- [☁️ Production Deployment](#%EF%B8%8F-production-deployment)
+- [🧪 Testing](#-testing)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
 - [License](#-license)
 
 ## 🚀 Quick Start
 
+Get started with the Pharmacy Inventory API in minutes.
+
 ### Prerequisites
-- Python 3.8+
-- PostgreSQL/SQLite
-- pip
+- Python 3.8 or higher
+- PostgreSQL 13+ (recommended) or SQLite
+- pip 20.0.0+
+- Git
+- Virtualenv (recommended)
 
 ### Installation
 
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/pharmacy-inventory.git
+   cd pharmacy-inventory
+   ```
+
+2. **Set up a virtual environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up environment variables**
+   Create a `.env` file in the project root:
+   ```env
+   DEBUG=True
+   SECRET_KEY=your-secret-key-here
+   DATABASE_URL=postgres://user:password@localhost:5432/pharmacy_db
+   ALLOWED_HOSTS=localhost,127.0.0.1
+   ```
+
+5. **Run migrations**
+   ```bash
+   python manage.py migrate
+   ```
+
+6. **Create a superuser**
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+7. **Run the development server**
+   ```bash
+   python manage.py runserver
+   ```
+
+   The API will be available at `http://127.0.0.1:8000/`
+   
+   Access the admin panel at `http://127.0.0.1:8000/admin/`
+
+## 🏗️ Project Structure
+
+```
+pharmacy-inventory/
+├── Pharmacy_Inventory_API/     # Main project directory
+│   ├── __init__.py
+│   ├── settings.py            # Project settings
+│   ├── urls.py                # Main URL configuration
+│   └── wsgi.py                # WSGI config
+├── alerts/                    # Alerts app
+├── core/                      # Core functionality
+├── medicines/                 # Medicines app
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── urls.py
+│   └── views.py
+├── manage.py
+├── requirements.txt           # Project dependencies
+└── .env.example              # Example environment variables
+```
+
+## 🔌 Requirements
+
+The project requires the following dependencies:
+
+### Core Dependencies
+- Python 3.8+
+- Django 4.2
+- Django REST Framework 3.14.0
+- SQLite 3.36+ (built into Python)
+- Python Decouple 3.8
+- dj-database-url 1.3.0
+
+### Development Dependencies
+- black 23.7.0 (code formatting)
+- flake8 6.1.0 (linting)
+- pytest 7.4.0 (testing)
+- pytest-django 4.5.2 (Django test integration)
+- coverage 7.2.7 (test coverage)
+- factory-boy 3.3.0 (test fixtures)
+
+### Production Dependencies
+- gunicorn 21.2.0 (WSGI server)
+- whitenoise 6.5.0 (static files)
+- django-cors-headers 4.3.0 (CORS support)
+- django-environ 0.11.2 (environment management)
+
+### Security Dependencies
+- djangorestframework-simplejwt 5.3.0 (JWT authentication)
+- django-axes 6.0.2 (security monitoring)
+- django-ratelimit 4.0.0 (API rate limiting)
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+Create a `.env` file in the project root with the following variables:
+
+```env
+# Django Settings
+DEBUG=True
+SECRET_KEY=your-secret-key-here
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Database
+DATABASE_URL=sqlite:///db.sqlite3
+
+# JWT Authentication
+JWT_SECRET_KEY=your-jwt-secret-key
+JWT_ALGORITHM=HS256
+JWT_EXPIRATION_DELTA_DAYS=7
+
+# Email Configuration (for notifications)
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+DEFAULT_FROM_EMAIL=noreply@pharmacy.com
+
+# CORS Settings
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+```
+
+### Running with Docker (Alternative)
+
+1. Ensure Docker and Docker Compose are installed
+2. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+3. Update the `.env` file with your configuration
+4. Build and start the containers:
+   ```bash
+   docker-compose up --build
+   ```
+5. Run migrations:
+   ```bash
+   docker-compose exec web python manage.py migrate
+   ```
+6. Create a superuser:
+   ```bash
+   docker-compose exec web python manage.py createsuperuser
+   ```
+
+## 📚 API Documentation
+
+Once the development server is running, you can access the following endpoints:
+
+### Base URL
+```
+http://localhost:8000/api/
+```
+
+### Authentication
+All API endpoints require authentication using JWT tokens.
+
+#### Obtain Token
+```http
+POST /api/token/
+Content-Type: application/json
+
+{
+    "username": "your_username",
+    "password": "your_password"
+}
+```
+
+Response:
+```json
+{
+    "refresh": "your_refresh_token",
+    "access": "your_access_token"
+}
+```
+
+#### Refresh Token
+```http
+POST /api/token/refresh/
+Content-Type: application/json
+
+{
+    "refresh": "your_refresh_token"
+}
+```
+
+### Core Endpoints
+
+#### Medicines
+- `GET /api/medicines/` - List all medicines
+- `POST /api/medicines/` - Create a new medicine
+- `GET /api/medicines/{id}/` - Retrieve a specific medicine
+- `PUT /api/medicines/{id}/` - Update a medicine
+- `DELETE /api/medicines/{id}/` - Delete a medicine
+- `GET /api/medicines/low-stock/` - List low stock medicines
+- `GET /api/medicines/expiring-soon/` - List medicines expiring soon
+
+#### Prescriptions
+- `GET /api/prescriptions/` - List all prescriptions
+- `POST /api/prescriptions/` - Create a new prescription
+- `GET /api/prescriptions/{id}/` - Retrieve a specific prescription
+- `PUT /api/prescriptions/{id}/` - Update a prescription
+- `DELETE /api/prescriptions/{id}/` - Delete a prescription
+- `GET /api/prescriptions/patient/{patient_id}/` - Get patient's prescriptions
+
+#### Alerts
+- `GET /api/alerts/` - List all alerts
+- `GET /api/alerts/unread/` - List unread alerts
+- `PATCH /api/alerts/{id}/mark-read/` - Mark alert as read
+
+## 🔐 Authentication
+
+The API uses JWT (JSON Web Tokens) for authentication. To authenticate your requests, include the JWT token in the Authorization header:
+
+```http
+Authorization: Bearer your_access_token_here
+```
+
+### User Roles
+
+1. **Admin**
+   - Full access to all endpoints
+   - Can manage users and system settings
+   - Can view all data across the system
+
+2. **Pharmacist**
+   - Can manage medicines and prescriptions
+   - Can view and update patient information
+   - Cannot modify system settings
+
+3. **Staff**
+   - Can view medicines and prescriptions
+   - Limited write access
+   - Cannot access sensitive operations
+
+## 🐳 Docker Deployment
+
+### Prerequisites
+- Docker 20.10.0+
+- Docker Compose 1.29.0+
+
+### Steps
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/pharmacy-inventory.git
+   cd pharmacy-inventory
+   ```
+
+2. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+3. **Build and start the containers**
+   ```bash
+   docker-compose up --build -d
+   ```
+
+4. **Run migrations**
+   ```bash
+   docker-compose exec web python manage.py migrate
+   ```
+
+5. **Create superuser**
+   ```bash
+   docker-compose exec web python manage.py createsuperuser
+   ```
+
+6. **Access the application**
+   - API: http://localhost:8000/
+   - Admin: http://localhost:8000/admin/
+
+## ☁️ Production Deployment
+
+### Prerequisites
+- Linux server (Ubuntu 20.04+ recommended)
+- Nginx
+- PostgreSQL
+- Python 3.8+
+- Redis (for caching and Celery)
+
+### Deployment Steps
+
+1. **Server Setup**
+   ```bash
+   # Update system packages
+   sudo apt update && sudo apt upgrade -y
+   
+   # Install required packages
+   sudo apt install -y python3-pip python3-venv nginx redis-server
+   ```
+
+2. **Database Setup**
+   SQLite is used by default with Django. The database file (`db.sqlite3`) will be created automatically when you run migrations.
+
+3. **Deploy Application**
+   ```bash
+   # Clone repository
+   git clone https://github.com/yourusername/pharmacy-inventory.git /opt/pharmacy-inventory
+   cd /opt/pharmacy-inventory
+   
+   # Create virtual environment
+   python3 -m venv venv
+   source venv/bin/activate
+   
+   # Install dependencies
+   pip install -r requirements/production.txt
+   
+   # Configure environment variables
+   cp .env.example .env
+   nano .env  # Update with production settings
+   
+   # Run migrations
+   python manage.py migrate
+   python manage.py collectstatic --noinput
+   
+   # Create superuser
+   python manage.py createsuperuser
+   ```
+
+4. **Configure Gunicorn**
+   Create `/etc/systemd/system/pharmacy.service`:
+   ```ini
+   [Unit]
+   Description=Pharmacy Inventory Gunicorn Service
+   After=network.target
+
+   [Service]
+   User=www-data
+   Group=www-data
+   WorkingDirectory=/opt/pharmacy-inventory
+   Environment="PATH=/opt/pharmacy-inventory/venv/bin"
+   ExecStart=/opt/pharmacy-inventory/venv/bin/gunicorn \
+       --workers 3 \
+       --bind unix:/run/pharmacy.sock \
+       --timeout 120 \
+       Pharmacy_Inventory_API.wsgi:application
+   
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
+5. **Configure Nginx**
+   Create `/etc/nginx/sites-available/pharmacy`:
+   ```nginx
+   server {
+       listen 80;
+       server_name yourdomain.com;
+
+       location = /favicon.ico { access_log off; log_not_found off; }
+       
+       location /static/ {
+           root /opt/pharmacy-inventory;
+       }
+
+       location / {
+           include proxy_params;
+           proxy_pass http://unix:/run/pharmacy.sock;
+       }
+   }
+   ```
+
+6. **Enable the site and start services**
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl start pharmacy
+   sudo systemctl enable pharmacy
+   sudo systemctl restart nginx
+   ```
+
+7. **Set up SSL (recommended)**
+   ```bash
+   sudo apt install certbot python3-certbot-nginx
+   sudo certbot --nginx -d yourdomain.com
+   ```
+
+## 🧪 Testing
+
+Run the test suite with:
+
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/Pharmacy_Inventory_API.git
-cd Pharmacy_Inventory_API
+# Run all tests
+pytest
 
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# Run tests with coverage report
+pytest --cov=.
 
-# Install dependencies
+# Run specific test file
+pytest path/to/test_file.py
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Contact
+
+For any questions or support, please contact Atem Kuot - atemliaikuot@gmail.com
+
+Project Link: [https://github.com/atem-kuot/ALX_BE_Capstone_project.git](https://github.com/atem-kuot/ALX_BE_Capstone_project.git)
 pip install -r requirements.txt
 
 # Set up environment
@@ -79,7 +498,7 @@ cp .env.example .env
 python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
-sqlmigrate
+
 # Start development server
 python manage.py runserver
 ```
@@ -296,18 +715,42 @@ Custom permission classes in [`permissions.py`](core/permissions.py) control acc
 
 ## 💡 Usage Examples
 
-### Creating a Medicine
+### Creating a Supplier
 ```python
-POST /api/medicines/
-{
-    "name": "Paracetamol",
-    "category": "ANALGESIC",
-    "quantity": 100,
-    "dosage": "500mg/tablet",
-    "expiry_date": "2025-12-31",
-    "threshold_alert": 20,
-    "supplier": 1
+# Example: Create a new supplier
+import requests
+
+url = "http://localhost:8000/api/medicines/suppliers/"
+headers = {
+    "Authorization": "Bearer your_access_token_here",
+    "Content-Type": "application/json"
 }
+
+supplier_data = {
+    "name": "Global Pharma Supplies",
+    "contact_person": "John Doe",
+    "email": "contact@globalpharma.com",
+    "phone": "+1234567890",
+    "address": "123 Medical Supply Ave, Pharma City, PC 12345"
+}
+
+response = requests.post(url, json=supplier_data, headers=headers)
+print(response.status_code)
+print(response.json())
+```
+
+### Retrieving Suppliers
+```python
+# Get all suppliers
+response = requests.get("http://localhost:8000/api/medicines/suppliers/", headers=headers)
+suppliers = response.json()
+print(suppliers)
+
+# Get a specific supplier
+supplier_id = 1
+response = requests.get(f"http://localhost:8000/api/medicines/suppliers/{supplier_id}/", headers=headers)
+supplier = response.json()
+print(supplier)
 ```
 
 ### Fulfilling a Prescription
