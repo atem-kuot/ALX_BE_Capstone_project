@@ -9,7 +9,7 @@
   [![Docker](https://img.shields.io/badge/Docker-20.10+-blue.svg)](https://www.docker.com/)
   [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
   [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-  [![CI/CD](https://github.com/yourusername/pharmacy-inventory/actions/workflows/django.yml/badge.svg)](https://github.com/yourusername/pharmacy-inventory/actions)
+  
 </div>
 
 ## ✨ Key Features
